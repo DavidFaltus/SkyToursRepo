@@ -1,0 +1,166 @@
+/* BASIC STYLY*/
+
+body {
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* TRIP CARD STYLY */
+.trip-card {
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+}
+
+.trip-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.trip-card img {
+    height: 150px;
+    object-fit: cover;
+}
+
+.specs-badge {
+    font-size: 0.8em;
+    margin-right: 5px;
+}
+
+/* LOGIN FORM STYLY  */
+.login-container {
+    margin-top: 2rem;
+}
+
+.login-card {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.login-card-title {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.login-form-group {
+    margin-bottom: 1rem;
+}
+
+.login-helper-text {
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.login-helper-text small {
+    color: #6c757d;
+}
+
+.login-loading-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* CART VIEW STYLY  */
+.empty-cart-container {
+    text-align: center;
+    margin-top: 3rem;
+}
+
+.empty-cart-heading {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.empty-cart-text {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+}
+
+.cart-table-section {
+    overflow-x: auto;
+}
+
+.cart-table {
+    vertical-align: middle;
+}
+
+.cart-footer-row td:first-child {
+    text-align: right;
+    font-weight: bold;
+}
+
+.cart-total-amount {
+    font-size: 1.25rem;
+    color: #0d6efd;
+    font-weight: bold;
+}
+
+.cart-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+    gap: 1rem;
+}
+
+.cart-auth-message {
+    color: #dc3545;
+    display: inline-block;
+    margin-right: 1rem;
+    margin-bottom: 0;
+}
+
+.checkout-loading-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* HOME VIEW STYLY  */
+.home-header {
+    margin-bottom: 2rem;
+}
+
+.home-title {
+    font-size: 2.5rem;
+}
+
+.home-subtitle {
+    font-size: 1.25rem;
+}
+
+.loading-spinner-container {
+    text-align: center;
+    margin-top: 3rem;
+}
+
+.error-alert {
+    margin-top: 2rem;
+}
+
+.card-price {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #0d6efd;
+}
+
+.add-to-cart-btn {
+    white-space: nowrap;
+}
+
+.btn-cart-added {
+    background-color: #198754;
+    border-color: #198754;
+    color: white;
+}
+
+/* NAVBAR STYLY  */
+.navbar-user-status {
+    color: #198754;
+}
+
+.navbar-logout {
+    color: #dc3545;
+}
+
+.nav-cart-badge {
+    background-color: #0d6efd;
+}

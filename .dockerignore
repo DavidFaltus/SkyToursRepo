@@ -1,0 +1,30 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# IDE
+.idea
+.vscode
+*.iml
+*.iws
+*.ipr
+
+# Build
+target/
+build/
+dist/
+
+# Frontend
+frontend/
+
+# Dokumentace
+*.md
+HELP.md
+
+# Ostatní
+.env
+.env.local
+uploads/
+node_modules/
+package-lock.json

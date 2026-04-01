@@ -1,0 +1,15 @@
+{
+  "name": "skytours-frontend",
+  "version": "1.0.0",
+  "description": "SPA pro SkyTours s vlastním State Managementem (TNPW2)",
+  "scripts": {
+    "dev": "vite",
+    "start": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "vite": "^5.1.4"
+  }
+}
