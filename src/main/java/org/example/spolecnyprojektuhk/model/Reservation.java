@@ -7,10 +7,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Entita reprezentující hlavičku rezervace letu uživatelem.
- * Tabulka 'reservation'.
- */
 @Entity
 @Table(name = "reservation")
 public class Reservation {
@@ -43,7 +39,6 @@ public class Reservation {
     public Long getId() {
         return id;
     }
-
     public void setId(Long id) {
         this.id = id;
     }
@@ -51,7 +46,6 @@ public class Reservation {
     public AppUser getUser() {
         return user;
     }
-
     public void setUser(AppUser user) {
         this.user = user;
     }
@@ -59,7 +53,6 @@ public class Reservation {
     public LocalDateTime getReservationDate() {
         return reservationDate;
     }
-
     public void setReservationDate(LocalDateTime reservationDate) {
         this.reservationDate = reservationDate;
     }
@@ -67,7 +60,6 @@ public class Reservation {
     public BigDecimal getTotalPrice() {
         return totalPrice;
     }
-
     public void setTotalPrice(BigDecimal totalPrice) {
         this.totalPrice = totalPrice;
     }
@@ -75,7 +67,6 @@ public class Reservation {
     public String getStatus() {
         return status;
     }
-
     public void setStatus(String status) {
         this.status = status;
     }
@@ -83,7 +74,6 @@ public class Reservation {
     public List<ReservationItem> getItems() {
         return items;
     }
-
     public void setItems(List<ReservationItem> items) {
         this.items = items;
     }

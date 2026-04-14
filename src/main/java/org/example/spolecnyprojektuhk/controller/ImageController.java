@@ -20,9 +20,6 @@ import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.UUID;
 
-/**
- * Controller pro upload a stahování obrázků na souborový systém.
- */
 @RestController
 @RequestMapping("/api/images")
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -44,10 +41,6 @@ public class ImageController {
         }
     }
 
-    /**
-     * Uploadne obrázek a přiřadí ho k existujícímu letu.
-     * Metoda: POST /api/images/upload/{tripId}
-     */
     @PostMapping("/upload/{tripId}")
     public ResponseEntity<String> uploadImage(@PathVariable Long tripId, @RequestParam("file") MultipartFile file) {
         if (file.isEmpty()) {
@@ -82,10 +75,6 @@ public class ImageController {
         }
     }
 
-    /**
-     * Získá obrázek pro zobrazení (frontend bude volat src="/api/images/{filename}").
-     * Metoda: GET /api/images/{filename}
-     */
     @GetMapping("/{filename:.+}")
     public ResponseEntity<Resource> getImage(@PathVariable String filename) {
         try {

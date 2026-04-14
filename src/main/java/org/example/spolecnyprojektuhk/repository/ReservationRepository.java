@@ -13,28 +13,8 @@ import java.util.Optional;
  */
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
-
-    /**
-     * findByUserId
-     * Vrátí seznam rezervací podle uživatele.
-     */
     List<Reservation> findByUserId(Long userId);
-
-    /**
-     * findByUserAndStatus
-     * Najde rezervaci podle uživatele a stavu.
-     */
     Optional<Reservation> findByUserAndStatus(AppUser user, String status);
-
-    /**
-     * findByUserAndStatusIsNot
-     * Najde seznam rezervací pro daného uživatele, které nemají zadaný stav.
-     */
     List<Reservation> findByUserAndStatusIsNot(AppUser user, String status);
-
-    /**
-     * findByStatusIsNot
-     * Najde seznam všech rezervací, které nemají zadaný stav.
-     */
     List<Reservation> findByStatusIsNot(String status);
 }

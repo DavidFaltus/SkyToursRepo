@@ -2,10 +2,6 @@ package org.example.spolecnyprojektuhk.model;
 
 import jakarta.persistence.*;
 
-/**
- * Entita reprezentující kategorii zážitkových letů (např. Vyhlídkové, Adrenalinové).
- * Tabulka 'trip_category'.
- */
 @Entity
 @Table(name = "trip_category")
 public class TripCategory {

@@ -11,11 +11,5 @@ import java.util.List;
  */
 @Repository
 public interface TripRepository extends JpaRepository<Trip, Long> {
-
-    /**
-     * Vrátí seznam letů podle dané kategorie.
-     * @param categoryId ID kategorie
-     * @return Seznam letů
-     */
     List<Trip> findByCategoryId(Long categoryId);
 }

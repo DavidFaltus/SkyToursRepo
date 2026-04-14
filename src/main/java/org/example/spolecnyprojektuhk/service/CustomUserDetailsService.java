@@ -11,9 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 
-/**
- * Zprostředkovává logiku natahování uživatele z DB pro Spring Security.
- */
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
@@ -23,10 +20,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         this.userRepository = userRepository;
     }
 
-    /**
-     * Vytáhne uživatele podle "username" z naší AppUser tabulky a obalí ho
-     * do UserDetails objektu, se kterým umí Spring Security dále pracovat.
-     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         AppUser appUser = userRepository.findByUsername(username)

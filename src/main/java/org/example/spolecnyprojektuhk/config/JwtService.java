@@ -15,9 +15,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-/**
- * Servisní třída pro manipulaci s JWT tokenem (generování, ověřování, extrakce).
- */
 @Service
 public class JwtService {
 
@@ -27,31 +24,19 @@ public class JwtService {
     @Value("${jwt.expiration}")
     private long jwtExpiration;
 
-    /**
-     * Vytáhne uživatelské jméno (username) z předaného tokenu.
-     */
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
-    /**
-     * Extrakce konkrétní informace z nákladu tokenu.
-     */
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
 
-    /**
-     * Vytvoření nového tokenu pro uživatele (bez extra parametrů).
-     */
     public String generateToken(UserDetails userDetails) {
         return generateToken(new HashMap<>(), userDetails);
     }
 
-    /**
-     * Vytvoření tokenu včetně mapy volitelných tvrzení.
-     */
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
         return Jwts
                 .builder()
@@ -63,9 +48,6 @@ public class JwtService {
                 .compact();
     }
 
-    /**
-     * Kontrola, zda token platí pro zadaného uživatele a zda nevypršel.
-     */
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
@@ -79,9 +61,6 @@ public class JwtService {
         return extractClaim(token, Claims::getExpiration);
     }
 
-    /**
-     * Dešifrování zadaného tajného klíče (v Base64) na kryptografický klíč typu HS256.
-     */
     private Claims extractAllClaims(String token) {
         return Jwts
                 .parserBuilder()

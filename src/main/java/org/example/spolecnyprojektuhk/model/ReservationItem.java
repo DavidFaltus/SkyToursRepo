@@ -34,12 +34,9 @@ public class ReservationItem {
 
     public ReservationItem() {}
 
-    // Getters and Setters
-
     public Long getReservationId() {
         return reservationId;
     }
-
     public void setReservationId(Long reservationId) {
         this.reservationId = reservationId;
     }
@@ -47,7 +44,6 @@ public class ReservationItem {
     public Long getTripId() {
         return tripId;
     }
-
     public void setTripId(Long tripId) {
         this.tripId = tripId;
     }
@@ -55,7 +51,6 @@ public class ReservationItem {
     public Reservation getReservation() {
         return reservation;
     }
-
     public void setReservation(Reservation reservation) {
         this.reservation = reservation;
     }
@@ -63,7 +58,6 @@ public class ReservationItem {
     public Trip getTrip() {
         return trip;
     }
-
     public void setTrip(Trip trip) {
         this.trip = trip;
     }
@@ -71,7 +65,6 @@ public class ReservationItem {
     public Integer getQuantity() {
         return quantity;
     }
-
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
@@ -79,7 +72,6 @@ public class ReservationItem {
     public BigDecimal getUnitPrice() {
         return unitPrice;
     }
-
     public void setUnitPrice(BigDecimal unitPrice) {
         this.unitPrice = unitPrice;
     }

@@ -11,18 +11,6 @@ import java.util.Optional;
  */
 @Repository
 public interface AppUserRepository extends JpaRepository<AppUser, Long> {
-
-    /**
-     * Najde uživatele podle uživatelského jména (přihlašování).
-     * @param username Přihlašovací jméno
-     * @return Uživatel, pokud existuje
-     */
     Optional<AppUser> findByUsername(String username);
-
-    /**
-     * Najde uživatele podle e-mailu.
-     * @param email E-mailová adresa
-     * @return Uživatel, pokud existuje
-     */
     Optional<AppUser> findByEmail(String email);
 }

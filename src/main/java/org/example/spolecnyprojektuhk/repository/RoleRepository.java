@@ -11,11 +11,5 @@ import java.util.Optional;
  */
 @Repository
 public interface RoleRepository extends JpaRepository<Role, Long> {
-
-    /**
-     * Vyhledání role podle jejího názvu.
-     * @param name Název role
-     * @return Role, pokud existuje
-     */
     Optional<Role> findByName(String name);
 }

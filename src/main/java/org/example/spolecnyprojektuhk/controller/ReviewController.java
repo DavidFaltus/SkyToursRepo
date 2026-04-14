@@ -16,9 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Controller pro správu recenzí.
- */
 @RestController
 @RequestMapping("/api/reviews")
 @CrossOrigin(origins = "*")
@@ -34,10 +31,6 @@ public class ReviewController {
         this.tripRepository = tripRepository;
     }
 
-    /**
-     * Vrátí všechny recenze k jednomu specifickému letu.
-     * Metoda: GET /api/reviews/trip/{tripId}
-     */
     @GetMapping("/trip/{tripId}")
     public ResponseEntity<List<ReviewDto>> getReviewsForTrip(@PathVariable Long tripId) {
         List<ReviewDto> reviews = reviewRepository.findByTripId(tripId).stream()
@@ -52,10 +45,6 @@ public class ReviewController {
         return ResponseEntity.ok(reviews);
     }
 
-    /**
-     * Přidání nové recenze (Vyžaduje JWT token - autentizaci).
-     * Metoda: POST /api/reviews
-     */
     @PostMapping
     public ResponseEntity<String> addReview(@RequestBody CreateReviewRequest request) {
         // Vytáhne přihlášeného uživatele z kontextu (který nastavil JwtFilter)

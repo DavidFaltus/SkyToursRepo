@@ -130,10 +130,6 @@ public class ReservationService {
         reservationRepository.save(reservation);
     }
 
-    /**
-     * deleteReservation
-     * Smaže rezervaci podle jejího ID.
-     */
     @Transactional
     public void deleteReservation(Long reservationId) {
         if (!reservationRepository.existsById(reservationId)) {

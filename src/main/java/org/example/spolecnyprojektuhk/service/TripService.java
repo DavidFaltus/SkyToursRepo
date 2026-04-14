@@ -15,9 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Služba pro práci s lety. Obsahuje business logiku.
- */
 @Service
 public class TripService {
 
@@ -31,10 +28,6 @@ public class TripService {
         this.locationRepository = locationRepository;
     }
 
-    /**
-     * Vrátí seznam všech dostupných letů (produktů) s namapovanými kategoriemi a lokacemi.
-     * @return Seznam DTO objektů.
-     */
     @Transactional(readOnly = true)
     public List<TripDto> getAllTrips() {
         return tripRepository.findAll().stream()
@@ -42,12 +35,6 @@ public class TripService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Získá jeden konkrétní let podle jeho ID.
-     * @param id ID letu.
-     * @return DTO letu.
-     * @throws RuntimeException Pokud let neexistuje.
-     */
     @Transactional(readOnly = true)
     public TripDto getTripById(Long id) {
         Trip trip = tripRepository.findById(id)
@@ -55,11 +42,6 @@ public class TripService {
         return mapToDto(trip);
     }
 
-    /**
-     * Vytvoří nový let.
-     * @param tripDto DTO s daty nového letu.
-     * @return DTO vytvořeného letu.
-     */
     @Transactional
     public TripDto createTrip(TripDto tripDto) {
         Trip trip = new Trip();
@@ -68,12 +50,6 @@ public class TripService {
         return mapToDto(savedTrip);
     }
 
-    /**
-     * Aktualizuje existující let.
-     * @param id ID letu, který chceme upravit.
-     * @param tripDto Nová data letu.
-     * @return Aktualizované DTO.
-     */
     @Transactional
     public TripDto updateTrip(Long id, TripDto tripDto) {
         Trip trip = tripRepository.findById(id)
@@ -84,10 +60,6 @@ public class TripService {
         return mapToDto(updatedTrip);
     }
 
-    /**
-     * Pomocná metoda pro transformaci Entity do DTO, 
-     * abychom neodhalovali interní model ven do API.
-     */
     private TripDto mapToDto(Trip trip) {
         TripDto dto = new TripDto();
         dto.setId(trip.getId());
@@ -112,9 +84,6 @@ public class TripService {
         return dto;
     }
 
-    /**
-     * Pomocná metoda pro mapování DTO na entitu.
-     */
     private void mapDtoToEntity(TripDto dto, Trip entity) {
         entity.setName(dto.getName());
         entity.setDescription(dto.getDescription());

@@ -11,11 +11,5 @@ import java.util.Optional;
  */
 @Repository
 public interface PassengerProfileRepository extends JpaRepository<PassengerProfile, Long> {
-
-    /**
-     * Získá profil podle ID uživatele.
-     * @param userId ID uživatele
-     * @return Profil pasažéra, pokud existuje
-     */
     Optional<PassengerProfile> findByUserId(Long userId);
 }

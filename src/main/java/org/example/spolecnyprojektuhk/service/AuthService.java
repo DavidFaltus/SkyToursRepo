@@ -22,10 +22,6 @@ public class AuthService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    /**
-     * registerUser
-     * Zaregistruje nového uživatele s rolí ROLE_USER nebo ROLE_ADMIN na základě požadavku.
-     */
     @Transactional
     public void registerUser(RegisterRequest request) {
         if (appUserRepository.findByUsername(request.getUsername()).isPresent()) {

@@ -13,9 +13,6 @@ import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Optional;
 
-/**
- * Controller pro správu profilu pasažéra (výška, váha, medical notes atd.).
- */
 @RestController
 @RequestMapping("/api/profiles")
 @CrossOrigin(origins = "*", maxAge = 3600) // Vráceno pro konkrétní kontrolery
@@ -29,10 +26,6 @@ public class PassengerProfileController {
         this.userRepository = userRepository;
     }
 
-    /**
-     * Vrátí profil aktuálně přihlášeného uživatele.
-     * Metoda: GET /api/profiles/me
-     */
     @GetMapping("/me")
     public ResponseEntity<?> getMyProfile() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -50,10 +43,6 @@ public class PassengerProfileController {
         }
     }
 
-    /**
-     * Aktualizace nebo vytvoření profilu aktuálně přihlášeného uživatele.
-     * Metoda: POST /api/profiles/me
-     */
     @PostMapping("/me")
     public ResponseEntity<String> updateMyProfile(@RequestBody Map<String, Object> payload) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

@@ -14,9 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * Controller pro správu uživatelských profilů a objednávek.
- */
 @RestController
 @RequestMapping("/api/users")
 @CrossOrigin(origins = "*")
@@ -30,10 +27,6 @@ public class UserController {
         this.reservationService = reservationService;
     }
 
-    /**
-     * getMyProfile
-     * Získá profil přihlášeného uživatele.
-     */
     @GetMapping("/me")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<UserProfileDto> getMyProfile(@AuthenticationPrincipal UserDetails userDetails) {
@@ -50,10 +43,6 @@ public class UserController {
         return ResponseEntity.ok(dto);
     }
 
-    /**
-     * getMyReservations
-     * Získá všechny rezervace přihlášeného uživatele (kromě košíku).
-     */
     @GetMapping("/me/reservations")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<ReservationDetailsDto>> getMyReservations(@AuthenticationPrincipal UserDetails userDetails) {
@@ -61,10 +50,6 @@ public class UserController {
         return ResponseEntity.ok(reservations);
     }
 
-    /**
-     * getAllReservations
-     * Získá všechny rezervace v systému (pouze pro admina).
-     */
     @GetMapping("/reservations")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<ReservationDetailsDto>> getAllReservations() {
@@ -72,10 +57,6 @@ public class UserController {
         return ResponseEntity.ok(reservations);
     }
 
-    /**
-     * updateReservationStatus
-     * Změní stav konkrétní rezervace (pouze pro admina).
-     */
     @PutMapping("/reservations/{id}/status")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<String> updateReservationStatus(@PathVariable Long id, @RequestBody UpdateOrderStatusRequest request) {
@@ -83,10 +64,6 @@ public class UserController {
         return ResponseEntity.ok("Stav rezervace úspěšně aktualizován.");
     }
 
-    /**
-     * deleteReservation
-     * Smaže rezervaci (pouze pro admina).
-     */
     @DeleteMapping("/reservations/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<String> deleteReservation(@PathVariable Long id) {

@@ -9,9 +9,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-/**
- * Controller obsluhující rezervace a nákupní košík.
- */
 @RestController
 @RequestMapping("/api/cart")
 @CrossOrigin(origins = "*")
@@ -43,10 +40,6 @@ public class ReservationController {
         return ResponseEntity.ok(cart);
     }
 
-    /**
-     * convertCartToOrder
-     * Převede košík na finální objednávku.
-     */
     @PostMapping("/checkout")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<String> convertCartToOrder(@AuthenticationPrincipal UserDetails userDetails) {

@@ -9,9 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Controller pro kategorie letů.
- */
 @RestController
 @RequestMapping("/api/categories")
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -23,10 +20,6 @@ public class TripCategoryController {
         this.categoryRepository = categoryRepository;
     }
 
-    /**
-     * Vrátí všechny kategorie letů (např. Vyhlídkové, Adrenalinové).
-     * Metoda: GET /api/categories
-     */
     @GetMapping
     public ResponseEntity<List<TripCategoryDto>> getAllCategories() {
         List<TripCategoryDto> categories = categoryRepository.findAll().stream()

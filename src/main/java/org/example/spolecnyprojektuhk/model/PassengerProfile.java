@@ -3,10 +3,6 @@ package org.example.spolecnyprojektuhk.model;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 
-/**
- * Entita reprezentující specifický profil pasažéra (uživatele).
- * Tabulka 'passenger_profile'. Vztah 1:1 k 'app_user'.
- */
 @Entity
 @Table(name = "passenger_profile")
 public class PassengerProfile {
@@ -34,7 +30,6 @@ public class PassengerProfile {
     public Long getId() {
         return id;
     }
-
     public void setId(Long id) {
         this.id = id;
     }
@@ -42,7 +37,6 @@ public class PassengerProfile {
     public AppUser getUser() {
         return user;
     }
-
     public void setUser(AppUser user) {
         this.user = user;
     }
@@ -50,7 +44,6 @@ public class PassengerProfile {
     public BigDecimal getWeightKg() {
         return weightKg;
     }
-
     public void setWeightKg(BigDecimal weightKg) {
         this.weightKg = weightKg;
     }
@@ -58,7 +51,6 @@ public class PassengerProfile {
     public BigDecimal getHeightCm() {
         return heightCm;
     }
-
     public void setHeightCm(BigDecimal heightCm) {
         this.heightCm = heightCm;
     }
@@ -66,7 +58,6 @@ public class PassengerProfile {
     public String getMedicalNotes() {
         return medicalNotes;
     }
-
     public void setMedicalNotes(String medicalNotes) {
         this.medicalNotes = medicalNotes;
     }

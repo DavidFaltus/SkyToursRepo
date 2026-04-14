@@ -1,8 +1,5 @@
 package org.example.spolecnyprojektuhk.dto;
 
-/**
- * DTO pro přenos dat lokací/letišť.
- */
 public class LocationDto {
     private Long id;
     private String name;
@@ -18,8 +15,10 @@ public class LocationDto {
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
+
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
+
     public String getCity() { return city; }
     public void setCity(String city) { this.city = city; }
 }

@@ -9,9 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Controller pro správu a výpis lokací/letišť.
- */
 @RestController
 @RequestMapping("/api/locations")
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -23,10 +20,6 @@ public class LocationController {
         this.locationRepository = locationRepository;
     }
 
-    /**
-     * Získá všechny dostupné lokace.
-     * Metoda: GET /api/locations
-     */
     @GetMapping
     public ResponseEntity<List<LocationDto>> getAllLocations() {
         List<LocationDto> locations = locationRepository.findAll().stream()

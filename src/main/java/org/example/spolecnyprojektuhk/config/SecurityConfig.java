@@ -19,9 +19,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Konfigurace Spring Security.
- */
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
@@ -32,9 +29,6 @@ public class SecurityConfig {
         this.jwtAuthFilter = jwtAuthFilter;
     }
 
-    /**
-     * Zastřešuje logiku routování bezpečnosti.
-     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -66,9 +60,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-    /**
-     * Globální nastavení CORS politiky.
-     */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
@@ -82,17 +73,11 @@ public class SecurityConfig {
         return source;
     }
 
-    /**
-     * Bean pro hashování hesel uživatelů.
-     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    /**
-     * Manažer, který provádí samotnou autentizaci uživatele z DB.
-     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();

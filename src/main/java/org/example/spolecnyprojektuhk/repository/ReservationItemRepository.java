@@ -13,16 +13,6 @@ import java.util.Optional;
  */
 @Repository
 public interface ReservationItemRepository extends JpaRepository<ReservationItem, ReservationItemId> {
-
-    /**
-     * findByReservationId
-     * Získá všechny položky (lety) pro danou hlavičku rezervace.
-     */
     List<ReservationItem> findByReservationId(Long reservationId);
-
-    /**
-     * findByReservationIdAndTripId
-     * Najde položku rezervace podle ID rezervace a ID letu.
-     */
     Optional<ReservationItem> findByReservationIdAndTripId(Long reservationId, Long tripId);
 }

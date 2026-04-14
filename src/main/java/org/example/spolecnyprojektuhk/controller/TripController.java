@@ -8,9 +8,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * REST API Controller obsluhující dotazy nad Lety (Trips).
- */
 @RestController
 @RequestMapping("/api/trips")
 @CrossOrigin(origins = "*") // Vracím pro jistotu explicitní povolení pro Controller
@@ -22,19 +19,11 @@ public class TripController {
         this.tripService = tripService;
     }
 
-    /**
-     * Endpoint vracející všechny lety v JSON formátu.
-     * Metoda: GET /api/trips
-     */
     @GetMapping
     public ResponseEntity<List<TripDto>> getAllTrips() {
         return ResponseEntity.ok(tripService.getAllTrips());
     }
 
-    /**
-     * Endpoint vracející detail jednoho letu.
-     * Metoda: GET /api/trips/{id}
-     */
     @GetMapping("/{id}")
     public ResponseEntity<TripDto> getTripById(@PathVariable Long id) {
         try {
@@ -44,11 +33,6 @@ public class TripController {
         }
     }
 
-    /**
-     * Endpoint pro vytvoření nového letu.
-     * Metoda: POST /api/trips
-     * Přístup: Pouze uživatelé s rolí ROLE_ADMIN
-     */
     @PostMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> createTrip(@RequestBody TripDto tripDto) {
@@ -62,11 +46,6 @@ public class TripController {
         }
     }
 
-    /**
-     * Endpoint pro úpravu detailů letu.
-     * Metoda: PUT /api/trips/{id}
-     * Přístup: Pouze uživatelé s rolí ROLE_ADMIN
-     */
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> updateTrip(@PathVariable Long id, @RequestBody TripDto tripDto) {

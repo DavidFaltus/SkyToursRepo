@@ -14,9 +14,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-/**
- * Controller obsluhující přihlašování, registraci a vydávání JWT tokenů.
- */
 @RestController
 @RequestMapping("/api/auth")
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -40,10 +37,6 @@ public class AuthController {
         this.authService = authService;
     }
 
-    /**
-     * login
-     * Přihlásí uživatele a vrátí JWT token.
-     */
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
         authenticationManager.authenticate(
@@ -57,10 +50,6 @@ public class AuthController {
         return ResponseEntity.ok(new AuthResponse(jwt, appUser.getUsername(), appUser.getRole().getName()));
     }
 
-    /**
-     * register
-     * Zaregistruje nového uživatele a vrátí JWT token pro automatické přihlášení.
-     */
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
         authService.registerUser(request);

@@ -3,10 +3,6 @@ package org.example.spolecnyprojektuhk.model;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-/**
- * Entita reprezentující hodnocení letu.
- * Tabulka 'review'.
- */
 @Entity
 @Table(name = "review")
 public class Review {
@@ -37,7 +33,6 @@ public class Review {
     public Long getId() {
         return id;
     }
-
     public void setId(Long id) {
         this.id = id;
     }
@@ -45,7 +40,6 @@ public class Review {
     public AppUser getUser() {
         return user;
     }
-
     public void setUser(AppUser user) {
         this.user = user;
     }
@@ -53,7 +47,6 @@ public class Review {
     public Trip getTrip() {
         return trip;
     }
-
     public void setTrip(Trip trip) {
         this.trip = trip;
     }
@@ -61,7 +54,6 @@ public class Review {
     public Integer getRating() {
         return rating;
     }
-
     public void setRating(Integer rating) {
         this.rating = rating;
     }
@@ -69,7 +61,6 @@ public class Review {
     public String getComment() {
         return comment;
     }
-
     public void setComment(String comment) {
         this.comment = comment;
     }
@@ -77,7 +68,6 @@ public class Review {
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
-
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }

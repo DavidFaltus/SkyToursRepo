@@ -4,10 +4,6 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-/**
- * Entita reprezentující záznam o změně ceny konkrétního letu.
- * Odpovídá tabulce 'trip_price_audit' vyplňované přes Trigger.
- */
 @Entity
 @Table(name = "trip_price_audit")
 public class TripPriceAudit {

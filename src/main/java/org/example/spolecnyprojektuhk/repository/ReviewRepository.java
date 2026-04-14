@@ -11,11 +11,5 @@ import java.util.List;
  */
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
-
-    /**
-     * Získá všechny recenze pro daný let.
-     * @param tripId ID letu
-     * @return Seznam recenzí
-     */
     List<Review> findByTripId(Long tripId);
 }

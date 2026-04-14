@@ -2,10 +2,6 @@ package org.example.spolecnyprojektuhk.model;
 
 import jakarta.persistence.*;
 
-/**
- * Entita reprezentující tabulku 'role'.
- * Slouží pro určení práv uživatelů.
- */
 @Entity
 @Table(name = "role")
 public class Role {
@@ -26,7 +22,6 @@ public class Role {
     public Long getId() {
         return id;
     }
-
     public void setId(Long id) {
         this.id = id;
     }
@@ -34,7 +29,6 @@ public class Role {
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
     }

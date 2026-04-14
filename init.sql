@@ -1,7 +1,5 @@
 -- init.sql: Vytvoření základní struktury databáze SkyTours
 
--- 1. TABULKY (Celkem 10)
-
 -- Tabulka rolí (1)
 CREATE TABLE role (
     id SERIAL PRIMARY KEY,
@@ -19,7 +17,7 @@ CREATE TABLE app_user (
     CONSTRAINT fk_role FOREIGN KEY (role_id) REFERENCES role(id) ON DELETE RESTRICT
 );
 
--- Profil pasažéra pro specifika (např. váha u malých letadel) (3)
+-- Profil pasažéra pro specifika (3)
 CREATE TABLE passenger_profile (
     id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL UNIQUE,
@@ -44,7 +42,7 @@ CREATE TABLE trip_category (
     description TEXT
 );
 
--- Tabulka letů (trip) s JSONB sloupcem pro specifické parametry (6)
+-- Tabulka letů (6)
 CREATE TABLE trip (
     id SERIAL PRIMARY KEY,
     category_id INTEGER NOT NULL,
@@ -58,7 +56,7 @@ CREATE TABLE trip (
     CONSTRAINT fk_location FOREIGN KEY (location_id) REFERENCES location(id) ON DELETE RESTRICT
 );
 
--- Audit tabulka pro změny cen (7)
+-- Tabulka pro změny cen (7)
 CREATE TABLE trip_price_audit (
     id SERIAL PRIMARY KEY,
     trip_id INTEGER NOT NULL,
@@ -68,7 +66,7 @@ CREATE TABLE trip_price_audit (
     CONSTRAINT fk_trip_audit FOREIGN KEY (trip_id) REFERENCES trip(id) ON DELETE CASCADE
 );
 
--- Hodnocení (Recenze) letů (8)
+-- Hodnocení letů (8)
 CREATE TABLE review (
     id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL,
@@ -88,11 +86,10 @@ CREATE TABLE reservation (
     total_price DECIMAL(10, 2) DEFAULT 0,
     status VARCHAR(50) NOT NULL DEFAULT 'PENDING',
     CONSTRAINT fk_user_reservation FOREIGN KEY (user_id) REFERENCES app_user(id) ON DELETE CASCADE,
-    -- Přidáno CHECK omezení pro povolené stavy rezervace
     CONSTRAINT chk_reservation_status CHECK (status IN ('PENDING', 'CART', 'SENT', 'IN_DELIVERY', 'DELIVERED'))
 );
 
--- Vazební tabulka položek rezervace s kompozitním primárním klíčem (10)
+-- Tabulka položek rezervace (10)
 CREATE TABLE reservation_item (
     reservation_id INTEGER NOT NULL,
     trip_id INTEGER NOT NULL,
@@ -102,8 +99,6 @@ CREATE TABLE reservation_item (
     CONSTRAINT fk_reservation_item_res FOREIGN KEY (reservation_id) REFERENCES reservation(id) ON DELETE CASCADE,
     CONSTRAINT fk_reservation_item_trip FOREIGN KEY (trip_id) REFERENCES trip(id) ON DELETE RESTRICT
 );
-
--- 2. POHLEDY (VIEWS) - 3x
 
 -- View: Detailní pohled na let
 CREATE VIEW v_trip_details AS
@@ -142,8 +137,6 @@ SELECT
 FROM trip t
 LEFT JOIN review rv ON t.id = rv.trip_id
 GROUP BY t.id, t.name;
-
--- 3. FUNKCE (FUNCTIONS) - 3x
 
 -- Funkce: Výpočet celkové ceny položek pro rezervaci
 CREATE OR REPLACE FUNCTION calculate_total_price(p_reservation_id INT)
@@ -186,9 +179,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- 4. PROCEDURY (STORED PROCEDURES) - 3x
-
--- Procedura: Vytvoření rezervace s položkou (S transakcí a rollbackem)
+-- Procedura: Vytvoření rezervace s položkou
 CREATE OR REPLACE PROCEDURE sp_create_reservation(
     p_user_id INT,
     p_trip_id INT,
@@ -211,13 +202,12 @@ BEGIN
     VALUES (p_user_id, p_status)
     RETURNING id INTO v_reservation_id;
 
-    -- Vložení položky (může selhat např. na množství <= 0)
+    -- Vložení položky
     INSERT INTO reservation_item (reservation_id, trip_id, quantity, unit_price)
     VALUES (v_reservation_id, p_trip_id, p_quantity, v_trip_price);
 
 EXCEPTION
     WHEN OTHERS THEN
-        -- V případě jakékoliv chyby následuje logování a ROLLBACK
         RAISE NOTICE 'Chyba při vytváření rezervace: %', SQLERRM;
         ROLLBACK;
         RAISE;
@@ -256,9 +246,7 @@ BEGIN
 END;
 $$;
 
--- 5. TRIGGERS - 2x
-
--- Trigger: Auditování změny ceny letu (Logování do tabulky trip_price_audit)
+-- Trigger: Auditování změny ceny letu
 CREATE OR REPLACE FUNCTION trg_func_audit_trip_price()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -301,7 +289,7 @@ AFTER INSERT OR UPDATE OR DELETE ON reservation_item
 FOR EACH ROW
 EXECUTE FUNCTION trg_func_update_reservation_total();
 
--- 6. PRÁVA UŽIVATELE (Dedikovaný uživatel)
+-- 6. PRÁVA UŽIVATELE
 DO
 $do$
 BEGIN
@@ -317,30 +305,25 @@ GRANT USAGE ON SCHEMA public TO skytours_app;
 GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO skytours_app;
 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO skytours_app;
 
--- 7. VLOŽENÍ VÝCHOZÍCH DAT (Seedy)
+-- 7. VLOŽENÍ VÝCHOZÍCH DAT
 -- Základní role
 INSERT INTO role (name) VALUES ('ROLE_ADMIN'), ('ROLE_USER') ON CONFLICT DO NOTHING;
 
--- Administrátorský účet (heslo je pro ukázku v plain textu nebo BCrypt hashi podle logiky aplikace - pro teď admin123 hash z BCrypt "admin")
--- $2a$10$dXJ3SW6G7P50lGmMkkmwe.20cQQubK3.HCGKKfS0eOHTeRj9nPxuC je vygenerovaný BCrypt pro "admin"
 INSERT INTO app_user (role_id, username, password, email)
 VALUES (
     (SELECT id FROM role WHERE name = 'ROLE_ADMIN'),
     'admin',
-    '$2a$10$dXJ3SW6G7P50lGmMkkmwe.20cQQubK3.HCGKKfS0eOHTeRj9nPxuC',
+    'admin',
     'admin@skytours.com'
 ) ON CONFLICT DO NOTHING;
 
--- Běžný uživatel s heslem "user" (hash: $2a$10$k1wX7G4qD/yL.FpWJ5/H.O9e3m2m/K9x9n0N3M5D8L8vW1B7K1XhW)
 INSERT INTO app_user (role_id, username, password, email)
 VALUES (
     (SELECT id FROM role WHERE name = 'ROLE_USER'),
     'zakaznik',
-    '$2a$10$k1wX7G4qD/yL.FpWJ5/H.O9e3m2m/K9x9n0N3M5D8L8vW1B7K1XhW',
+    'zakaznik',
     'zakaznik@skytours.com'
 ) ON CONFLICT DO NOTHING;
-
--- Testovací data pro e-shop (Lokace, Kategorie, Lety)
 
 -- Lokace (letiště)
 INSERT INTO location (name, city, gps_coordinates) VALUES

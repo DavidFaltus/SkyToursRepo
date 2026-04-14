@@ -11,11 +11,5 @@ import java.util.List;
  */
 @Repository
 public interface TripPriceAuditRepository extends JpaRepository<TripPriceAudit, Long> {
-
-    /**
-     * Získá historii cen pro konkrétní let.
-     * @param tripId ID letu
-     * @return Seznam auditních záznamů seřazený od nejstaršího (výchozí chování JPA, lze přidat OrderBy)
-     */
     List<TripPriceAudit> findByTripIdOrderByChangedAtDesc(Long tripId);
 }

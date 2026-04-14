@@ -5,18 +5,9 @@ public class UpdateOrderStatusRequest {
 
     public UpdateOrderStatusRequest() {}
 
-    /**
-     * getNewStatus
-     * Vrací nový stav objednávky.
-     */
     public String getNewStatus() {
         return newStatus;
     }
-
-    /**
-     * setNewStatus
-     * Nastavuje nový stav objednávky.
-     */
     public void setNewStatus(String newStatus) {
         this.newStatus = newStatus;
     }

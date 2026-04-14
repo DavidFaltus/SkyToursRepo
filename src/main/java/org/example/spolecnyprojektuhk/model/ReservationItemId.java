@@ -3,10 +3,6 @@ package org.example.spolecnyprojektuhk.model;
 import java.io.Serializable;
 import java.util.Objects;
 
-/**
- * Třída reprezentující kompozitní primární klíč pro tabulku 'reservation_item'.
- * Obsahuje vazby reservation_id a trip_id.
- */
 public class ReservationItemId implements Serializable {
 
     private Long reservationId;
