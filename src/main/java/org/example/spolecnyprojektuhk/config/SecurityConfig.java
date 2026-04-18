@@ -39,7 +39,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/trips/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/images/**").permitAll() // Povolit obrázky
-                        .requestMatchers("/index.html", "/app.js", "/style.css", "/main.js", "/favicon.ico").permitAll()
+                        // Povoleni pristupu ke statickym souborum pro frontend
+                        .requestMatchers(HttpMethod.GET, "/", "/index.html", "/favicon.ico", "/src/**", "/**/*.js", "/**/*.css", "/dist/**", "/assets/**", "/**/*.avif").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

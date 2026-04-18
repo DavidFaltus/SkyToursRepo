@@ -2,6 +2,7 @@ import { getState, dispatch } from '../store/state.js';
 import { fetchTripById } from '../api/tripsApi.js';
 import { addItemToCart } from '../api/reservationApi.js';
 
+//TODO PRIDAT KE KAZDEMU PRODUKTU JINOU FOTKU
 export const renderTripDetailView = async (container) => {
     const state = getState();
     const tripId = state.ui.selectedTripId;
@@ -23,10 +24,10 @@ export const renderTripDetailView = async (container) => {
             });
         }
 
-        //TODO VYUŽÍT FOTKU PŘÍMO PŘIDANOU DO PROJEKTU
+        // FOTKA PŘÍMO PŘIDANÁ DO PROJEKTU (FALLBACK)
         const imageUrl = trip.imagePath
-            ? `http://localhost:8080/api/images/${trip.imagePath}`
-            : `https://images.unsplash.com/photo-1526778548025-13a634d13045?q=80&w=1200&h=400&fit=crop&auto=format`;
+            ? `/api/images/${trip.imagePath}`
+            : `/assets/image.avif`;
 
         // ZOBRAZENÍ KONKRÉTNÍHO PRODUKTU
         container.innerHTML = `
@@ -42,7 +43,7 @@ export const renderTripDetailView = async (container) => {
             </div>
             <div class="row g-5">
                 <div class="col-md-7">
-                    <img src="${imageUrl}" class="img-fluid rounded shadow-lg" alt="${trip.name}">
+                    <img src="${imageUrl}" class="img-fluid rounded shadow-lg" alt="${trip.name}" onerror="this.onerror=null;this.src='/assets/image.avif';">
                 </div>
                 <div class="col-md-5">
                     <h1 class="mb-3">${trip.name}</h1>

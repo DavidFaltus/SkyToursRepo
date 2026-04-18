@@ -56,15 +56,15 @@ export const renderHomeView = async (container) => {
             });
         }
 
-        //TODO VYUŽÍT FOTKU PŘÍMO PŘIDANOU DO PROJEKTU
+        // FOTKA PŘÍMO PŘIDANÁ DO PROJEKTU (FALLBACK)
         const imageUrl = trip.imagePath
-            ? `http://localhost:8080/api/images/${trip.imagePath}`
-            : `https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=400&h=200&fit=crop&auto=format`;
+            ? `/api/images/${trip.imagePath}`
+            : `/assets/image.avif`;
 
         html += `
             <div class="col-md-4 col-lg-4" id="trip-container-${trip.id}">
                 <div class="card h-100 trip-card shadow-sm clickable-card" data-id="${trip.id}" style="cursor: pointer;">
-                    <img src="${imageUrl}" class="card-img-top" alt="${trip.name}">
+                    <img src="${imageUrl}" class="card-img-top" alt="${trip.name}" onerror="this.onerror=null;this.src='/assets/image.avif';">
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title">${trip.name}</h5>
                         <h6 class="card-subtitle mb-2 text-muted">
