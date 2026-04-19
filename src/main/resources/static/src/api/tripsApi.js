@@ -5,8 +5,20 @@ import { dispatch } from '../store/state.js';
 export const fetchTrips = async () => {
     dispatch('FETCH_TRIPS_START');
     try {
-        const trips = await apiClient('/trips');
-        dispatch('FETCH_TRIPS_SUCCESS', trips);
+        const tripsFromView = await apiClient('/trips/view');
+        
+        const mappedTrips = tripsFromView.map(tv => ({
+            id: tv.tripId,
+            name: tv.tripName,
+            price: tv.price,
+            description: 'Načteno přes databázový pohled (v_trip_details)',
+            specs: tv.specs ? JSON.parse(tv.specs) : null,
+            category: { name: tv.categoryName },
+            location: { city: tv.departureCity },
+            imagePath: null
+        }));
+        
+        dispatch('FETCH_TRIPS_SUCCESS', mappedTrips);
     } catch (error) {
         dispatch('FETCH_TRIPS_ERROR', error.message);
     }

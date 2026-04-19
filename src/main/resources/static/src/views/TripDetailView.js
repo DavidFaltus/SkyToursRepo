@@ -1,6 +1,7 @@
 import { getState, dispatch } from '../store/state.js';
 import { fetchTripById } from '../api/tripsApi.js';
 import { addItemToCart } from '../api/reservationApi.js';
+import { apiClient } from '../api/apiClient.js';
 
 //TODO PRIDAT KE KAZDEMU PRODUKTU JINOU FOTKU
 export const renderTripDetailView = async (container) => {
@@ -17,6 +18,21 @@ export const renderTripDetailView = async (container) => {
     try {
         const trip = await fetchTripById(tripId);
 
+        //TODO IMPLEMENTACE HODNOCENÍ PRODUKTU PO DODÁNÍ
+        //VOLÁNÍ VIEW NA PRŮMĚRNÉ HODNOCENÍ PRODUKTU
+        let ratingHtml = '<span class="text-muted small">Hodnocení není k dispozici.</span>';
+        try {
+            const ratings = await apiClient('/trips/ratings/view');
+            const myRating = ratings.find(r => r.tripId === trip.id);
+            if (myRating && myRating.averageRating) {
+                ratingHtml = `<span class="badge bg-warning text-dark"><i class="bi bi-star-fill"></i> ${myRating.averageRating} / 5</span> <small class="text-muted">(${myRating.reviewCount} hodnocení)</small>`;
+            } else {
+                ratingHtml = '<span class="badge bg-secondary">Zatím nehodnoceno</span>';
+            }
+        } catch (err) {
+            console.error("Nepodařilo se načíst hodnocení z DB pohledu", err);
+        }
+
         let specsHtml = '';
         if (trip.specs) {
             Object.entries(trip.specs).forEach(([key, value]) => {
@@ -25,7 +41,6 @@ export const renderTripDetailView = async (container) => {
         }
 
         // FOTKA PŘÍMO PŘIDANÁ DO PROJEKTU (FALLBACK)
-        // Musíme řešit "null", prázdný string i undefined
         let imageUrl = '/assets/image.jpg';
         if (trip.imagePath && trip.imagePath.trim() !== '' && trip.imagePath !== 'null') {
             imageUrl = `/api/images/${trip.imagePath}`;
@@ -49,6 +64,7 @@ export const renderTripDetailView = async (container) => {
                 </div>
                 <div class="col-md-5">
                     <h1 class="mb-3">${trip.name}</h1>
+                    <div class="mb-2">${ratingHtml}</div>
                     <h5 class="text-muted mb-3">
                         ${trip.category ? trip.category.name : 'Neznámá kategorie'} | 
                         <i class="bi bi-geo-alt"></i> ${trip.location ? trip.location.city : 'Neznámá lokace'}

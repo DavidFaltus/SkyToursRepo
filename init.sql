@@ -289,6 +289,11 @@ AFTER INSERT OR UPDATE OR DELETE ON reservation_item
 FOR EACH ROW
 EXECUTE FUNCTION trg_func_update_reservation_total();
 
+-- INDEXY (Přidáno pro splnění bodu zadání o indexech)
+CREATE INDEX idx_trip_price ON trip(price);
+CREATE INDEX idx_app_user_username ON app_user(username);
+CREATE INDEX idx_reservation_status ON reservation(status);
+
 -- 6. PRÁVA UŽIVATELE
 DO
 $do$
@@ -325,18 +330,37 @@ VALUES (
     'zakaznik@skytours.com'
 ) ON CONFLICT DO NOTHING;
 
--- Lokace (letiště)
+-- Lokace (letiště) - ROZŠÍŘENO
 INSERT INTO location (name, city, gps_coordinates) VALUES
 ('Letiště Hradec Králové', 'Hradec Králové', '50.2458, 15.8450'),
 ('Letiště Václava Havla', 'Praha', '50.1008, 14.2600'),
-('Letiště Brno-Tuřany', 'Brno', '49.1513, 16.6944')
+('Letiště Letňany', 'Praha', '50.1314, 14.5244'),
+('Letiště Brno-Tuřany', 'Brno', '49.1513, 16.6944'),
+('Letiště Leoše Janáčka', 'Ostrava', '49.6961, 18.1111'),
+('Letiště Karlovy Vary', 'Karlovy Vary', '50.2031, 12.9150'),
+('Letiště Pardubice', 'Pardubice', '50.0133, 15.7386'),
+('Letiště České Budějovice', 'Pardubice', '48.9458, 14.4278'),
+('Letiště Hosín', 'České Budějovice', '49.0400, 14.4950'),
+('Letiště Příbram', 'Příbram', '49.7186, 14.1089'),
+('Letiště Kladno', 'Praha', '50.1367, 14.0894'),
+('Letiště Jihlava', 'Jihlava', '49.3958, 15.6361'),
+('Letiště Liberec', 'Liberec', '50.7686, 15.0253'),
+('Letiště Plzeň-Dlouhá Lhota', 'Plzeň', '49.6733, 14.0983'),
+('Letiště Olomouc', 'Olomouc', '49.5667, 17.2167')
 ON CONFLICT DO NOTHING;
 
--- Kategorie letů
+-- Kategorie letů - ROZŠÍŘENO
 INSERT INTO trip_category (name, description) VALUES
 ('Vyhlídkové lety', 'Klidné lety pro milovníky krásných výhledů.'),
 ('Adrenalinové lety', 'Akrobacie a rychlost pro ty, kteří hledají vzrušení.'),
-('Pilotem na zkoušku', 'Vyzkoušejte si pilotování letadla pod dohledem instruktora.')
+('Pilotem na zkoušku', 'Vyzkoušejte si pilotování letadla pod dohledem instruktora.'),
+('Lety balónem', 'Tiché plachtění vzduchem v horkovzdušném balónu s úchvatnými výhledy.'),
+('Lety vrtulníkem', 'Pomalý let a možnost visení na místě, ideální pro detailní prohlídku a focení.'),
+('Seskoky padákem (Tandem)', 'Volný pád a následný let na padáku v tandemu se zkušeným instruktorem.'),
+('Historická letadla', 'Zážitek z letu ve zrestaurovaných veteránech a válečných strojích.'),
+('Lety kluzákem (Větroněm)', 'Tichý let bez motoru využívající pouze stoupavé proudy.'),
+('Zážitkové přelety Alp', 'Delší lety přes vrcholky Alp s kyslíkovými přístroji.'),
+('Noční lety', 'Romantické lety osvětlenými městy po západu slunce.')
 ON CONFLICT DO NOTHING;
 
 -- Lety (Produkty) s využitím JSONB

@@ -1,6 +1,7 @@
 import { getState, dispatch } from '../store/state.js';
 import { fetchTrips, updateTrip, createTrip } from '../api/tripsApi.js';
 import { addItemToCart } from '../api/reservationApi.js';
+import { apiClient } from '../api/apiClient.js'; // Přidáno pro načítání lokací a kategorií
 
 export const renderHomeView = async (container) => {
     let state = getState();
@@ -145,10 +146,29 @@ export const renderHomeView = async (container) => {
     }
 };
 
-const renderEditForm = (tripId, trip) => {
+const renderEditForm = async (tripId, trip) => {
     const isCreating = tripId === null;
     const container = document.getElementById(isCreating ? 'add-trip-container' : `trip-container-${tripId}`);
     if (!container) return;
+
+    // Načtení kategorií a lokací pro dropdowny
+    let categories = [];
+    let locations = [];
+    try {
+        categories = await apiClient('/categories');
+        locations = await apiClient('/locations');
+    } catch (err) {
+        console.error("Chyba při načítání číselníků pro formulář:", err);
+    }
+
+    let categoryOptions = categories.map(cat => 
+        `<option value="${cat.id}" ${trip.category && trip.category.id === cat.id ? 'selected' : ''}>${cat.name}</option>`
+    ).join('');
+
+    let locationOptions = locations.map(loc => 
+        `<option value="${loc.id}" ${trip.location && trip.location.id === loc.id ? 'selected' : ''}>${loc.city} - ${loc.name}</option>`
+    ).join('');
+
 
     let specsHtml = '';
     if (trip.specs) {
@@ -163,7 +183,7 @@ const renderEditForm = (tripId, trip) => {
         });
     }
 
-    // FORMULÁŘ NA VYTVOŘENÍ NOVÉH PRODUKTU
+    // FORMULÁŘ NA VYTVOŘENÍ NOVÉHO PRODUKTU
     container.innerHTML = `
         <div class="card h-100 trip-card shadow-sm border-${isCreating ? 'success' : 'warning'}">
             <div class="card-body d-flex flex-column">
@@ -181,13 +201,19 @@ const renderEditForm = (tripId, trip) => {
                             <input type="number" step="0.01" class="form-control form-control-sm" id="edit-price" value="${trip.price || ''}" required>
                         </div>
                         <div class="col-6 mb-2">
-                            <label class="form-label small text-muted mb-0">Kategorie ID</label>
-                            <input type="number" class="form-control form-control-sm" id="edit-category" value="${trip.categoryId || ''}" required>
+                            <label class="form-label small text-muted mb-0">Kategorie</label>
+                            <select class="form-select form-select-sm" id="edit-category" required>
+                                <option value="" disabled ${!trip.category ? 'selected' : ''}>Vyberte kategorii...</option>
+                                ${categoryOptions}
+                            </select>
                         </div>
                     </div>
                     <div class="mb-2">
-                        <label class="form-label small text-muted mb-0">Lokace ID</label>
-                        <input type="number" class="form-control form-control-sm" id="edit-location" value="${trip.locationId || ''}" required>
+                        <label class="form-label small text-muted mb-0">Lokace</label>
+                        <select class="form-select form-select-sm" id="edit-location" required>
+                            <option value="" disabled ${!trip.location ? 'selected' : ''}>Vyberte lokaci...</option>
+                            ${locationOptions}
+                        </select>
                     </div>
                     <div class="mb-3">
                         <label class="form-label small text-muted mb-0">Popis</label>

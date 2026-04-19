@@ -1,5 +1,6 @@
 import { getState, dispatch } from '../store/state.js';
 import { fetchAllReservations, updateReservationStatus, deleteReservation } from '../api/userApi.js';
+import { apiClient } from '../api/apiClient.js';
 
 export const renderOrdersView = async (container) => {
     const state = getState();
@@ -13,8 +14,18 @@ export const renderOrdersView = async (container) => {
 
     container.innerHTML = `
         <div class="row mt-4">
-            <div class="col-12">
+            <div class="col-12 d-flex justify-content-between align-items-center">
                 <h2 class="mb-4">Správa všech objednávek</h2>
+                <button id="show-summary-btn" class="btn btn-outline-info">Zobrazit rychlý přehled (z DB Pohledu)</button>
+            </div>
+        </div>
+        <div id="summary-container" class="row mb-4 d-none">
+            <div class="col-12">
+                <div class="card bg-light">
+                    <div class="card-body" id="summary-content">
+                        Načítám přehled...
+                    </div>
+                </div>
             </div>
         </div>
         <div class="row">
@@ -29,6 +40,59 @@ export const renderOrdersView = async (container) => {
     `;
 
     const allOrdersList = document.getElementById('all-orders-list');
+    const summaryBtn = document.getElementById('show-summary-btn');
+    const summaryContainer = document.getElementById('summary-container');
+    const summaryContent = document.getElementById('summary-content');
+
+    //VOLÁNÍ DB POHLEDU
+    summaryBtn.addEventListener('click', async () => {
+        if (summaryContainer.classList.contains('d-none')) {
+            summaryContainer.classList.remove('d-none');
+            try {
+                const summaryData = await apiClient('/users/reservations/summary');
+                if (summaryData.length === 0) {
+                    summaryContent.innerHTML = 'Žádná data pro přehled.';
+                    return;
+                }
+                
+                let tableHtml = `
+                    <table class="table table-sm table-bordered mt-2">
+                        <thead>
+                            <tr>
+                                <th>ID Rezervace</th>
+                                <th>Uživatel</th>
+                                <th>Datum</th>
+                                <th>Stav</th>
+                                <th>Cena celkem</th>
+                                <th>Počet typů položek</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                
+                summaryData.forEach(row => {
+                    const date = new Date(row.reservationDate).toLocaleString();
+                    tableHtml += `
+                        <tr>
+                            <td>${row.reservationId}</td>
+                            <td>${row.username}</td>
+                            <td>${date}</td>
+                            <td>${row.status}</td>
+                            <td>${row.totalPrice} Kč</td>
+                            <td>${row.itemsCount}</td>
+                        </tr>
+                    `;
+                });
+                tableHtml += '</tbody></table><small class="text-muted">Data načtena přímo z PostgreSQL pohledu v_reservation_summary</small>';
+                summaryContent.innerHTML = tableHtml;
+            } catch (err) {
+                summaryContent.innerHTML = `<span class="text-danger">Chyba při načítání přehledu: ${err.message}</span>`;
+            }
+        } else {
+            summaryContainer.classList.add('d-none');
+        }
+    });
+
 
     try {
         const reservations = await fetchAllReservations();

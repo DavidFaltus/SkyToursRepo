@@ -1,11 +1,14 @@
 package org.example.spolecnyprojektuhk.controller;
 
 import org.example.spolecnyprojektuhk.dto.TripDto;
+import org.example.spolecnyprojektuhk.dto.TripDetailsViewDto;
+import org.example.spolecnyprojektuhk.dto.TripRatingViewDto;
 import org.example.spolecnyprojektuhk.service.TripService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -22,6 +25,21 @@ public class TripController {
     @GetMapping
     public ResponseEntity<List<TripDto>> getAllTrips() {
         return ResponseEntity.ok(tripService.getAllTrips());
+    }
+
+    @GetMapping("/view")
+    public ResponseEntity<List<TripDetailsViewDto>> getAllTripsFromView() {
+        return ResponseEntity.ok(tripService.getAllTripsFromView());
+    }
+
+    @GetMapping("/ratings/view")
+    public ResponseEntity<List<TripRatingViewDto>> getTripRatingsFromView() {
+        return ResponseEntity.ok(tripService.getTripRatingsFromView());
+    }
+
+    @GetMapping("/under-price/{price}")
+    public ResponseEntity<List<TripDetailsViewDto>> getTripsUnderPrice(@PathVariable BigDecimal price) {
+        return ResponseEntity.ok(tripService.getTripsUnderPrice(price));
     }
 
     @GetMapping("/{id}")

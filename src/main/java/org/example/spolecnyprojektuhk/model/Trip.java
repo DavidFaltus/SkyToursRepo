@@ -3,6 +3,8 @@ package org.example.spolecnyprojektuhk.model;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import java.math.BigDecimal;
 import java.util.Map;
 
@@ -34,6 +36,7 @@ public class Trip {
     private BigDecimal price;
 
     // JSON pole převedené na Map<String, Object> pro specifické údaje (JSONB v databázi)
+    @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "specs", columnDefinition = "jsonb")
     private String specsJson;
 

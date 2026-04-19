@@ -2,6 +2,7 @@ package org.example.spolecnyprojektuhk.service;
 
 import org.example.spolecnyprojektuhk.dto.ReservationDetailsDto;
 import org.example.spolecnyprojektuhk.dto.ReservationItemDetailsDto;
+import org.example.spolecnyprojektuhk.dto.ReservationSummaryViewDto;
 import org.example.spolecnyprojektuhk.model.*;
 import org.example.spolecnyprojektuhk.repository.AppUserRepository;
 import org.example.spolecnyprojektuhk.repository.ReservationItemRepository;
@@ -121,13 +122,19 @@ public class ReservationService {
                 .collect(Collectors.toList());
     }
 
+    //VOLÁNÍ POHLEDU PRO SUMMARY REZERVACÍ
+    @Transactional(readOnly = true)
+    public List<ReservationSummaryViewDto> getReservationSummary() {
+        return reservationRepository.getReservationSummaryFromView();
+    }
+
+    //VOLÁNÍ PROCEDURY NA ZMĚNU STAVU REZERVACE
     @Transactional
     public void updateReservationStatus(Long reservationId, String newStatus) {
-        Reservation reservation = reservationRepository.findById(reservationId)
-                .orElseThrow(() -> new RuntimeException("Rezervace s ID " + reservationId + " nenalezena."));
-        
-        reservation.setStatus(newStatus);
-        reservationRepository.save(reservation);
+        if (!reservationRepository.existsById(reservationId)) {
+            throw new RuntimeException("Rezervace s ID " + reservationId + " nenalezena.");
+        }
+        reservationRepository.updateReservationStatusProcedure(reservationId.intValue(), newStatus);
     }
 
     @Transactional
@@ -148,10 +155,16 @@ public class ReservationService {
     }
 
     private void updateCartTotal(Reservation cart) {
-        BigDecimal total = cart.getItems().stream()
-                .map(item -> item.getUnitPrice().multiply(new BigDecimal(item.getQuantity())))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-        cart.setTotalPrice(total);
+        //VOLÁNÍ FUNKCE calculate_total_price
+        if (cart.getId() != null) {
+            BigDecimal totalFromDb = reservationRepository.calculateTotalPriceFunction(cart.getId().intValue());
+            cart.setTotalPrice(totalFromDb != null ? totalFromDb : BigDecimal.ZERO);
+        } else {
+            BigDecimal total = cart.getItems().stream()
+                    .map(item -> item.getUnitPrice().multiply(new BigDecimal(item.getQuantity())))
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+            cart.setTotalPrice(total);
+        }
     }
 
     private ReservationDetailsDto mapReservationToDetailsDto(Reservation reservation) {

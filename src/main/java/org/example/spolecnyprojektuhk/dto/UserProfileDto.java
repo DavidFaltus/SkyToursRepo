@@ -8,6 +8,7 @@ public class UserProfileDto {
     private String email;
     private String role;
     private LocalDateTime createdAt;
+    private String passengerInfo; // 2. ZADÁNÍ: Pro využití funkce get_passenger_info z DB
 
     public UserProfileDto() {}
 
@@ -44,5 +45,12 @@ public class UserProfileDto {
     }
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getPassengerInfo() {
+        return passengerInfo;
+    }
+    public void setPassengerInfo(String passengerInfo) {
+        this.passengerInfo = passengerInfo;
     }
 }

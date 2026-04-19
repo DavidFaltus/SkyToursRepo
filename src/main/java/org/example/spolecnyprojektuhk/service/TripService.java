@@ -3,6 +3,8 @@ package org.example.spolecnyprojektuhk.service;
 import org.example.spolecnyprojektuhk.dto.LocationDto;
 import org.example.spolecnyprojektuhk.dto.TripCategoryDto;
 import org.example.spolecnyprojektuhk.dto.TripDto;
+import org.example.spolecnyprojektuhk.dto.TripDetailsViewDto;
+import org.example.spolecnyprojektuhk.dto.TripRatingViewDto;
 import org.example.spolecnyprojektuhk.model.Location;
 import org.example.spolecnyprojektuhk.model.Trip;
 import org.example.spolecnyprojektuhk.model.TripCategory;
@@ -12,6 +14,7 @@ import org.example.spolecnyprojektuhk.repository.TripRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,6 +36,21 @@ public class TripService {
         return tripRepository.findAll().stream()
                 .map(this::mapToDto)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<TripDetailsViewDto> getAllTripsFromView() {
+        return tripRepository.getAllTripsFromView();
+    }
+
+    @Transactional(readOnly = true)
+    public List<TripRatingViewDto> getTripRatingsFromView() {
+        return tripRepository.getTripRatingsFromView();
+    }
+
+    @Transactional(readOnly = true)
+    public List<TripDetailsViewDto> getTripsUnderPrice(BigDecimal maxPrice) {
+        return tripRepository.getTripsUnderPrice(maxPrice);
     }
 
     @Transactional(readOnly = true)
