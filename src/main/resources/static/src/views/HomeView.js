@@ -57,14 +57,16 @@ export const renderHomeView = async (container) => {
         }
 
         // FOTKA PŘÍMO PŘIDANÁ DO PROJEKTU (FALLBACK)
-        const imageUrl = trip.imagePath
-            ? `/api/images/${trip.imagePath}`
-            : `/assets/image.avif`;
+        // Musíme řešit "null", prázdný string i undefined
+        let imageUrl = '/assets/image.jpg';
+        if (trip.imagePath && trip.imagePath.trim() !== '' && trip.imagePath !== 'null') {
+            imageUrl = `/api/images/${trip.imagePath}`;
+        }
 
         html += `
             <div class="col-md-4 col-lg-4" id="trip-container-${trip.id}">
                 <div class="card h-100 trip-card shadow-sm clickable-card" data-id="${trip.id}" style="cursor: pointer;">
-                    <img src="${imageUrl}" class="card-img-top" alt="${trip.name}" onerror="this.onerror=null;this.src='/assets/image.avif';">
+                    <img src="${imageUrl}" class="card-img-top" alt="${trip.name}" onerror="this.onerror=null;this.src='/assets/image.jpg';">
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title">${trip.name}</h5>
                         <h6 class="card-subtitle mb-2 text-muted">

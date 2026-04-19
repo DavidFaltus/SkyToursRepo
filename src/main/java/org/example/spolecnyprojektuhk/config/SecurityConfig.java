@@ -15,6 +15,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
+import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 import java.util.Arrays;
 import java.util.List;
@@ -30,17 +32,25 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, HandlerMappingIntrospector introspector) throws Exception {
+        MvcRequestMatcher.Builder mvcMatcherBuilder = new MvcRequestMatcher.Builder(introspector);
+        
         http
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Povolit všechny pre-flight OPTIONS požadavky
-                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers(mvcMatcherBuilder.pattern("/api/auth/**")).permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/trips/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/images/**").permitAll() // Povolit obrázky
                         // Povoleni pristupu ke statickym souborum pro frontend
-                        .requestMatchers(HttpMethod.GET, "/", "/index.html", "/favicon.ico", "/src/**", "/**/*.js", "/**/*.css", "/dist/**", "/assets/**", "/**/*.avif").permitAll()
+                        // POUŽITÍ MvcRequestMatcher.Builder je bezpečnější ve Spring Security v6
+                        .requestMatchers(mvcMatcherBuilder.pattern("/")).permitAll()
+                        .requestMatchers(mvcMatcherBuilder.pattern("/index.html")).permitAll()
+                        .requestMatchers(mvcMatcherBuilder.pattern("/favicon.ico")).permitAll()
+                        .requestMatchers(mvcMatcherBuilder.pattern("/src/**")).permitAll()
+                        .requestMatchers(mvcMatcherBuilder.pattern("/dist/**")).permitAll()
+                        .requestMatchers(mvcMatcherBuilder.pattern("/assets/**")).permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

@@ -25,9 +25,11 @@ export const renderTripDetailView = async (container) => {
         }
 
         // FOTKA PŘÍMO PŘIDANÁ DO PROJEKTU (FALLBACK)
-        const imageUrl = trip.imagePath
-            ? `/api/images/${trip.imagePath}`
-            : `/assets/image.avif`;
+        // Musíme řešit "null", prázdný string i undefined
+        let imageUrl = '/assets/image.jpg';
+        if (trip.imagePath && trip.imagePath.trim() !== '' && trip.imagePath !== 'null') {
+            imageUrl = `/api/images/${trip.imagePath}`;
+        }
 
         // ZOBRAZENÍ KONKRÉTNÍHO PRODUKTU
         container.innerHTML = `
@@ -43,7 +45,7 @@ export const renderTripDetailView = async (container) => {
             </div>
             <div class="row g-5">
                 <div class="col-md-7">
-                    <img src="${imageUrl}" class="img-fluid rounded shadow-lg" alt="${trip.name}" onerror="this.onerror=null;this.src='/assets/image.avif';">
+                    <img src="${imageUrl}" class="img-fluid rounded shadow-lg" alt="${trip.name}" onerror="this.onerror=null;this.src='/assets/image.jpg';">
                 </div>
                 <div class="col-md-5">
                     <h1 class="mb-3">${trip.name}</h1>
