@@ -2,13 +2,13 @@ package org.example.spolecnyprojektuhk.controller;
 
 import org.example.spolecnyprojektuhk.model.Trip;
 import org.example.spolecnyprojektuhk.repository.TripRepository;
-import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,7 +17,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.Arrays;
 import java.util.UUID;
 
 @RestController
@@ -27,8 +26,8 @@ public class ImageController {
 
     private final TripRepository tripRepository;
     
-    // Cesta do složky uploads ve rootu projektu
-    private final String UPLOAD_DIR = "uploads/";
+    // Cesta do složky foto ve rootu projektu
+    private final String UPLOAD_DIR = "foto/";
 
     public ImageController(TripRepository tripRepository) {
         this.tripRepository = tripRepository;
@@ -42,6 +41,7 @@ public class ImageController {
     }
 
     @PostMapping("/upload/{tripId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<String> uploadImage(@PathVariable Long tripId, @RequestParam("file") MultipartFile file) {
         if (file.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Nebyl vybrán žádný soubor.");
@@ -68,7 +68,7 @@ public class ImageController {
             trip.setImagePath(uniqueFileName);
             tripRepository.save(trip);
 
-            return ResponseEntity.ok("Obrázek byl úspěšně nahrán: " + uniqueFileName);
+            return ResponseEntity.ok("{\"filename\": \"" + uniqueFileName + "\"}");
 
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Chyba při ukládání souboru.");

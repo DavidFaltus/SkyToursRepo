@@ -18,13 +18,14 @@ public interface TripRepository extends JpaRepository<Trip, Long> {
     List<Trip> findByCategoryId(Long categoryId);
 
     //VOLÁNÍ POHLEDUZ DATABÁZE
-    @Query(value = "SELECT trip_id AS tripId, trip_name AS tripName, category_name AS categoryName, departure_city AS departureCity, price, CAST(specs AS text) AS specs FROM v_trip_details", nativeQuery = true)
+    // OPRAVA: Přidán image_path a description do dotazu pro zobrazení fotek a popisu na hlavní stránce
+    @Query(value = "SELECT t.id AS tripId, t.name AS tripName, c.name AS categoryName, l.city AS departureCity, t.price, CAST(t.specs AS text) AS specs, t.image_path AS imagePath, t.description AS description FROM trip t JOIN trip_category c ON t.category_id = c.id JOIN location l ON t.location_id = l.id", nativeQuery = true)
     List<TripDetailsViewDto> getAllTripsFromView();
 
     //VOLÁNÍ POHLEDU PRO HODNOCENÍ
     @Query(value = "SELECT trip_id AS tripId, trip_name AS tripName, average_rating AS averageRating, review_count AS reviewCount FROM v_trip_ratings", nativeQuery = true)
     List<TripRatingViewDto> getTripRatingsFromView();
 
-    @Query(value = "SELECT trip_id AS tripId, trip_name AS tripName, price, null AS categoryName, null AS departureCity, null AS specs FROM get_trips_under_price(:maxPrice)", nativeQuery = true)
+    @Query(value = "SELECT trip_id AS tripId, trip_name AS tripName, price, null AS categoryName, null AS departureCity, null AS specs, null AS imagePath, null AS description FROM get_trips_under_price(:maxPrice)", nativeQuery = true)
     List<TripDetailsViewDto> getTripsUnderPrice(@Param("maxPrice") java.math.BigDecimal maxPrice);
 }

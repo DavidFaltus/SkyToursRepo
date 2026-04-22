@@ -16,7 +16,7 @@ export const renderOrdersView = async (container) => {
         <div class="row mt-4">
             <div class="col-12 d-flex justify-content-between align-items-center">
                 <h2 class="mb-4">Správa všech objednávek</h2>
-                <button id="show-summary-btn" class="btn btn-outline-info">Zobrazit rychlý přehled (z DB Pohledu)</button>
+                <button id="show-summary-btn" class="btn btn-outline-info">Zobrazit rychlý přehled</button>
             </div>
         </div>
         <div id="summary-container" class="row mb-4 d-none">
@@ -83,7 +83,7 @@ export const renderOrdersView = async (container) => {
                         </tr>
                     `;
                 });
-                tableHtml += '</tbody></table><small class="text-muted">Data načtena přímo z PostgreSQL pohledu v_reservation_summary</small>';
+                tableHtml += '</tbody></table>';
                 summaryContent.innerHTML = tableHtml;
             } catch (err) {
                 summaryContent.innerHTML = `<span class="text-danger">Chyba při načítání přehledu: ${err.message}</span>`;

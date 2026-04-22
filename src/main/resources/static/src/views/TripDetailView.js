@@ -30,7 +30,7 @@ export const renderTripDetailView = async (container) => {
                 ratingHtml = '<span class="badge bg-secondary">Zatím nehodnoceno</span>';
             }
         } catch (err) {
-            console.error("Nepodařilo se načíst hodnocení z DB pohledu", err);
+            console.error("Nepodařilo se načíst hodnocení", err);
         }
 
         let specsHtml = '';

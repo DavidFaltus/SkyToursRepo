@@ -9,4 +9,6 @@ public interface TripDetailsViewDto {
     String getDepartureCity();
     BigDecimal getPrice();
     String getSpecs(); // JPA vrátí JSONB jako String
+    String getImagePath(); // OPRAVA: Přidán imagePath pro zobrazení fotek
+    String getDescription(); // Pridano zpatky
 }

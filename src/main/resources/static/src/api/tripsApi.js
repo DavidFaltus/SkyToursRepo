@@ -11,11 +11,11 @@ export const fetchTrips = async () => {
             id: tv.tripId,
             name: tv.tripName,
             price: tv.price,
-            description: 'Načteno přes databázový pohled (v_trip_details)',
+            description: tv.description,
             specs: tv.specs ? JSON.parse(tv.specs) : null,
             category: { name: tv.categoryName },
             location: { city: tv.departureCity },
-            imagePath: null
+            imagePath: tv.imagePath // OPRAVA: Přiřazení imagePath z DTO do state
         }));
         
         dispatch('FETCH_TRIPS_SUCCESS', mappedTrips);

@@ -220,6 +220,12 @@ const renderEditForm = async (tripId, trip) => {
                         <textarea class="form-control form-control-sm" id="edit-desc" rows="3">${trip.description || ''}</textarea>
                     </div>
                     
+                    <div class="mb-3">
+                        <label class="form-label small text-muted mb-0">Obrázek (volitelné)</label>
+                        <input class="form-control form-control-sm" type="file" id="edit-image" accept="image/*">
+                        <small class="text-muted d-block mt-1">Nahraje se po uložení produktu.</small>
+                    </div>
+
                     <h6 class="small text-muted">Specifikace</h6>
                     <div id="specs-container">${specsHtml}</div>
                     <button class="btn btn-sm btn-outline-secondary w-100 mb-3" type="button" id="add-spec-btn">Přidat specifikaci</button>
@@ -277,12 +283,43 @@ const renderEditForm = async (tripId, trip) => {
             specs: specs
         };
 
+        const imageFile = document.getElementById('edit-image').files[0];
+
         try {
+            let savedTrip;
             if (isCreating) {
-                await createTrip(data);
+                savedTrip = await createTrip(data);
             } else {
-                await updateTrip(tripId, { ...trip, ...data });
+                savedTrip = await updateTrip(tripId, { ...trip, ...data });
             }
+
+            // Pokud uživatel vybral i obrázek, nahrajeme ho
+            if (imageFile && savedTrip && savedTrip.id) {
+                const formData = new FormData();
+                formData.append('file', imageFile);
+
+                submitBtn.innerHTML = 'Nahrávám obrázek...';
+                const token = getState().user.token;
+
+                const response = await fetch(`http://localhost:8080/api/images/upload/${savedTrip.id}`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error('Chyba při nahrávání obrázku.');
+                }
+                
+                // Po nahrání fotky znovu načteme data pro zobrazení s novou fotkou
+                await fetchTrips();
+            }
+            
+            // Po úspěšném uložení dat a fotky obnovíme zobrazení
+            dispatch('NAVIGATE', { route: 'home' });
+
         } catch (error) {
             alert('Chyba při ukládání: ' + error.message);
             submitBtn.disabled = false;
