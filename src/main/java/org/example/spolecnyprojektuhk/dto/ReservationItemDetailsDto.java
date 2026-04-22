@@ -10,6 +10,8 @@ public class ReservationItemDetailsDto {
     private BigDecimal unitPrice;
     private int quantity;
     private Map<String, Object> tripSpecs;
+    private Integer rating;
+    private String review;
 
     public ReservationItemDetailsDto() {}
 
@@ -23,7 +25,7 @@ public class ReservationItemDetailsDto {
     public String getTripName() {
         return tripName;
     }
-    public void setTripName(String tripName) { // Opraveno: odstraněno duplicitní 'String'
+    public void setTripName(String tripName) {
         this.tripName = tripName;
     }
 
@@ -53,5 +55,19 @@ public class ReservationItemDetailsDto {
     }
     public void setTripSpecs(Map<String, Object> tripSpecs) {
         this.tripSpecs = tripSpecs;
+    }
+
+    public Integer getRating() {
+        return rating;
+    }
+    public void setRating(Integer rating) {
+        this.rating = rating;
+    }
+
+    public String getReview() {
+        return review;
+    }
+    public void setReview(String review) {
+        this.review = review;
     }
 }

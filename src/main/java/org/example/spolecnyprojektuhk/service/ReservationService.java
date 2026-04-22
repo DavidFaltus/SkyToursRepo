@@ -3,11 +3,13 @@ package org.example.spolecnyprojektuhk.service;
 import org.example.spolecnyprojektuhk.dto.ReservationDetailsDto;
 import org.example.spolecnyprojektuhk.dto.ReservationItemDetailsDto;
 import org.example.spolecnyprojektuhk.dto.ReservationSummaryViewDto;
+import org.example.spolecnyprojektuhk.dto.ReviewRequestDto;
 import org.example.spolecnyprojektuhk.model.*;
 import org.example.spolecnyprojektuhk.repository.AppUserRepository;
 import org.example.spolecnyprojektuhk.repository.ReservationItemRepository;
 import org.example.spolecnyprojektuhk.repository.ReservationRepository;
 import org.example.spolecnyprojektuhk.repository.TripRepository;
+import org.example.spolecnyprojektuhk.repository.ReviewRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,16 +25,19 @@ public class ReservationService {
     private final ReservationItemRepository itemRepository;
     private final AppUserRepository userRepository;
     private final TripRepository tripRepository;
+    private final ReviewRepository reviewRepository;
 
     public ReservationService(
             ReservationRepository reservationRepository,
             ReservationItemRepository itemRepository,
             AppUserRepository userRepository,
-            TripRepository tripRepository) {
+            TripRepository tripRepository,
+            ReviewRepository reviewRepository) {
         this.reservationRepository = reservationRepository;
         this.itemRepository = itemRepository;
         this.userRepository = userRepository;
         this.tripRepository = tripRepository;
+        this.reviewRepository = reviewRepository;
     }
 
     @Transactional
@@ -43,7 +48,7 @@ public class ReservationService {
         Reservation cart = reservationRepository.findByUserAndStatus(user, "CART")
                 .orElseGet(() -> createCart(user));
         
-        return mapReservationToDetailsDto(cart);
+        return mapReservationToDetailsDto(cart, user);
     }
 
     @Transactional
@@ -79,7 +84,7 @@ public class ReservationService {
         Reservation savedCart = reservationRepository.save(cart);
         updateCartTotal(savedCart);
         
-        return mapReservationToDetailsDto(savedCart);
+        return mapReservationToDetailsDto(savedCart, user);
     }
 
     @Transactional
@@ -111,14 +116,14 @@ public class ReservationService {
                 .orElseThrow(() -> new RuntimeException("Uživatel nenalezen."));
         
         return reservationRepository.findByUserAndStatusIsNot(user, "CART").stream()
-                .map(this::mapReservationToDetailsDto)
+                .map(reservation -> mapReservationToDetailsDto(reservation, user))
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public List<ReservationDetailsDto> getAllReservations() {
         return reservationRepository.findByStatusIsNot("CART").stream()
-                .map(this::mapReservationToDetailsDto)
+                .map(reservation -> mapReservationToDetailsDto(reservation, null)) // Můžeme předat null, admin nehodnotí za uživatele
                 .collect(Collectors.toList());
     }
 
@@ -145,6 +150,39 @@ public class ReservationService {
         reservationRepository.deleteById(reservationId);
     }
 
+    @Transactional
+    public void addReview(String username, Long tripId, ReviewRequestDto request) {
+        AppUser user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Uživatel nenalezen."));
+
+        Trip trip = tripRepository.findById(tripId)
+                .orElseThrow(() -> new RuntimeException("Let nenalezen."));
+
+        // Ověříme jestli uživatel produkt koupil a je doručený
+        boolean hasDeliveredReservation = reservationRepository.findByUserAndStatusIsNot(user, "CART").stream()
+                .filter(res -> "DELIVERED".equals(res.getStatus()))
+                .flatMap(res -> res.getItems().stream())
+                .anyMatch(item -> item.getTripId().equals(tripId));
+
+        if (!hasDeliveredReservation) {
+            throw new IllegalStateException("Nemůžete hodnotit produkt, který jste nezakoupili nebo ještě nebyl doručen.");
+        }
+
+        // Zkontrolujeme zda už uživatel produkt nehodnotil
+        Optional<Review> existingReview = reviewRepository.findByUserIdAndTripId(user.getId(), tripId);
+        if (existingReview.isPresent()) {
+            throw new IllegalStateException("Tento produkt jste již hodnotili.");
+        }
+
+        Review review = new Review();
+        review.setUser(user);
+        review.setTrip(trip);
+        review.setRating(request.getRating());
+        review.setComment(request.getComment());
+        
+        reviewRepository.save(review);
+    }
+
     private Reservation createCart(AppUser user) {
         System.out.println("[Service] Vytvářím nový košík pro uživatele: " + user.getUsername());
         Reservation cart = new Reservation();
@@ -167,7 +205,7 @@ public class ReservationService {
         }
     }
 
-    private ReservationDetailsDto mapReservationToDetailsDto(Reservation reservation) {
+    private ReservationDetailsDto mapReservationToDetailsDto(Reservation reservation, AppUser currentUser) {
         ReservationDetailsDto dto = new ReservationDetailsDto();
         dto.setId(reservation.getId());
         dto.setUsername(reservation.getUser().getUsername());
@@ -176,12 +214,12 @@ public class ReservationService {
         dto.setTotalPrice(reservation.getTotalPrice());
         dto.setStatus(reservation.getStatus());
         dto.setItems(reservation.getItems().stream()
-                .map(this::mapReservationItemToDetailsDto)
+                .map(item -> mapReservationItemToDetailsDto(item, currentUser))
                 .collect(Collectors.toList()));
         return dto;
     }
 
-    private ReservationItemDetailsDto mapReservationItemToDetailsDto(ReservationItem item) {
+    private ReservationItemDetailsDto mapReservationItemToDetailsDto(ReservationItem item, AppUser currentUser) {
         ReservationItemDetailsDto dto = new ReservationItemDetailsDto();
         dto.setTripId(item.getTrip().getId());
         dto.setTripName(item.getTrip().getName());
@@ -189,6 +227,15 @@ public class ReservationService {
         dto.setUnitPrice(item.getUnitPrice());
         dto.setQuantity(item.getQuantity());
         dto.setTripSpecs(item.getTrip().getSpecs());
+
+        if (currentUser != null) {
+             Optional<Review> review = reviewRepository.findByUserIdAndTripId(currentUser.getId(), item.getTripId());
+             if (review.isPresent()) {
+                 dto.setRating(review.get().getRating());
+                 dto.setReview(review.get().getComment());
+             }
+        }
+
         return dto;
     }
 }

@@ -1,6 +1,7 @@
 package org.example.spolecnyprojektuhk.controller;
 
 import org.example.spolecnyprojektuhk.dto.CartItemRequest;
+import org.example.spolecnyprojektuhk.dto.ReviewRequestDto;
 import org.example.spolecnyprojektuhk.dto.ReservationDetailsDto;
 import org.example.spolecnyprojektuhk.service.ReservationService;
 import org.springframework.http.ResponseEntity;
@@ -66,6 +67,22 @@ public class ReservationController {
             return ResponseEntity.status(400).body(e.getMessage());
         } finally {
             System.out.println("--- [Controller] Konec /api/cart/checkout ---\n");
+        }
+    }
+
+    @PostMapping("/items/{tripId}/review")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> addReview(
+            @PathVariable Long tripId,
+            @RequestBody ReviewRequestDto request,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            reservationService.addReview(userDetails.getUsername(), tripId, request);
+            return ResponseEntity.ok().body("Hodnocení bylo úspěšně přidáno.");
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(403).body(e.getMessage());
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
         }
     }
 }

@@ -52,3 +52,18 @@ export const checkoutCart = async () => {
         alert('Chyba při vytváření rezervace: ' + error.message);
     }
 };
+
+export const addTripReview = async (tripId, ratingData) => {
+    try {
+        const response = await apiClient(`/cart/items/${tripId}/review`, {
+            method: 'POST',
+            body: JSON.stringify(ratingData)
+        });
+        alert(response); 
+        return response;
+    } catch (error) {
+        console.error("[Reservation API] Chyba při hodnocení produktu:", error.message);
+        alert('Chyba při hodnocení: ' + error.message);
+        throw error;
+    }
+};
