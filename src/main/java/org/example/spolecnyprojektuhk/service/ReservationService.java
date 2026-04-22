@@ -63,7 +63,7 @@ public class ReservationService {
         if (existingItemOpt.isPresent()) {
             ReservationItem item = existingItemOpt.get();
             item.setQuantity(item.getQuantity() + quantity);
-            itemRepository.save(item);
+
         } else {
             ReservationItem newItem = new ReservationItem();
             newItem.setReservationId(cart.getId());
@@ -73,13 +73,13 @@ public class ReservationService {
             newItem.setQuantity(quantity);
             newItem.setUnitPrice(trip.getPrice());
             cart.getItems().add(newItem);
-            itemRepository.save(newItem);
         }
         
-        updateCartTotal(cart);
-        reservationRepository.save(cart);
-
-        return mapReservationToDetailsDto(cart);
+        // Uložíme košík což uloží nové/změněné položky
+        Reservation savedCart = reservationRepository.save(cart);
+        updateCartTotal(savedCart);
+        
+        return mapReservationToDetailsDto(savedCart);
     }
 
     @Transactional
