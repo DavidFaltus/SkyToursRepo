@@ -37,9 +37,9 @@ export const renderHomeView = async (container) => {
     if (isAdmin) {
         html += `
             <div class="col-md-4 col-lg-4" id="add-trip-container">
-                <div class="card h-100 trip-card shadow-sm add-new-card" style="cursor: pointer;">
+                <div class="card h-100 trip-card shadow-sm add-new-card">
                     <div class="card-body d-flex flex-column justify-content-center align-items-center">
-                        <i class="bi bi-plus-circle-dotted" style="font-size: 3rem; color: #6c757d;"></i>
+                        <i class="bi bi-plus-circle-dotted add-trip-icon"></i>
                         <h5 class="mt-3">Přidat nový let</h5>
                     </div>
                 </div>
@@ -66,7 +66,7 @@ export const renderHomeView = async (container) => {
 
         html += `
             <div class="col-md-4 col-lg-4" id="trip-container-${trip.id}">
-                <div class="card h-100 trip-card shadow-sm clickable-card" data-id="${trip.id}" style="cursor: pointer;">
+                <div class="card h-100 trip-card shadow-sm clickable-card" data-id="${trip.id}">
                     <img src="${imageUrl}" class="card-img-top" alt="${trip.name}" onerror="this.onerror=null;this.src='/assets/image.jpg';">
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title">${trip.name}</h5>

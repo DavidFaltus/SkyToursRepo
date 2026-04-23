@@ -16,6 +16,11 @@ body {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
+.add-trip-icon {
+    font-size: 3rem;
+    color: #6c757d;
+}
+
 .trip-card img {
     height: 150px;
     object-fit: cover;
