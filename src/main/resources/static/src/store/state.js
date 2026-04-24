@@ -67,9 +67,9 @@ export const dispatch = (action, payload) => {
             state.user.isAuthenticated = true;
             
             // ULOŽENÍ PRO TRVALÝ LOGIN
-            //localStorage.setItem('jwt', payload.token);
-            //localStorage.setItem('username', payload.username);
-            //localStorage.setItem('role', payload.role);
+            localStorage.setItem('jwt', payload.token);
+            localStorage.setItem('username', payload.username);
+            localStorage.setItem('role', payload.role);
             break;
 
         case 'LOGOUT':
