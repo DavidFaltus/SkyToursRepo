@@ -367,38 +367,69 @@ ON CONFLICT DO NOTHING;
 INSERT INTO trip (category_id, location_id, name, description, price, specs, image_path) VALUES
 (
     (SELECT id FROM trip_category WHERE name = 'Vyhlídkové lety'),
-    (SELECT id FROM location WHERE city = 'Hradec Králové'),
+    (SELECT id FROM location WHERE name = 'Letiště Hradec Králové'),
     'Romantika nad Orlickými horami',
     'Užijte si 45 minut letu nad krásnou přírodou Orlických hor s možností focení z paluby.',
     4500.00,
     '{"duration_min": 45, "max_passengers": 3, "aircraft": "Cessna 172"}',
-    NULL
+    'assets/trip1.jpg'
 ),
 (
     (SELECT id FROM trip_category WHERE name = 'Adrenalinové lety'),
-    (SELECT id FROM location WHERE city = 'Brno'),
+    (SELECT id FROM location WHERE name = 'Letiště Brno-Tuřany'),
     'Akrobatický let ve Zlín Z-142',
     'Zažijte přetížení a akrobatické prvky, které vás zarazí do sedačky!',
     7200.00,
     '{"duration_min": 20, "max_passengers": 1, "aircraft": "Zlín Z-142", "g_force": "až +4G/-2G"}',
-    NULL
+    'assets/trip2.jpg'
 ),
 (
     (SELECT id FROM trip_category WHERE name = 'Pilotem na zkoušku'),
-    (SELECT id FROM location WHERE city = 'Praha'),
+    (SELECT id FROM location WHERE name = 'Letiště Letňany'),
     'Staň se pilotem na den',
     'Po krátkém brífinku si sednete na místo prvního pilota a převezmete řízení.',
     9500.00,
     '{"duration_min": 60, "max_passengers": 1, "aircraft": "Diamond DA40", "instructor_included": true}',
-    NULL
+    'assets/trip3.jpg'
 ),
 (
     (SELECT id FROM trip_category WHERE name = 'Vyhlídkové lety'),
-    (SELECT id FROM location WHERE city = 'Praha'),
+    (SELECT id FROM location WHERE name = 'Letiště Václava Havla'),
     'Noční Praha z ptačí perspektivy',
     'Fascinující pohled na osvětlené hlavní město z pohodlí moderního letadla.',
     6000.00,
     '{"duration_min": 40, "max_passengers": 3, "aircraft": "Cessna 172", "night_flight": true}',
-    NULL
+    'assets/trip4.jpg'
 )
 ON CONFLICT DO NOTHING;
+-- 8. UKÁZKOVÁ DATA
+-- Noví uživatelé
+INSERT INTO app_user (role_id, username, password, email) VALUES
+((SELECT id FROM role WHERE name = 'ROLE_USER'), 'petr', '$2b$10$GMzKGXPGVxqprlTlo6AKN.H6Bl7VzDMBi2w77icioIm7rN6N3LGM.', 'petr@skytours.com'),
+((SELECT id FROM role WHERE name = 'ROLE_USER'), 'jana', '$2b$10$GMzKGXPGVxqprlTlo6AKN.H6Bl7VzDMBi2w77icioIm7rN6N3LGM.', 'jana@skytours.com'),
+((SELECT id FROM role WHERE name = 'ROLE_USER'), 'tomas', '$2b$10$GMzKGXPGVxqprlTlo6AKN.H6Bl7VzDMBi2w77icioIm7rN6N3LGM.', 'tomas@skytours.com')
+ON CONFLICT DO NOTHING;
+
+-- Profily pasažérů
+INSERT INTO passenger_profile (user_id, weight_kg, height_cm, medical_notes) VALUES
+((SELECT id FROM app_user WHERE username = 'petr'), 85.5, 182.0, 'Žádné omezení'),
+((SELECT id FROM app_user WHERE username = 'jana'), 65.0, 168.0, 'Mírná kinetóza'),
+((SELECT id FROM app_user WHERE username = 'tomas'), 92.0, 190.0, NULL)
+ON CONFLICT DO NOTHING;
+
+-- Rezervace
+INSERT INTO reservation (user_id, status, reservation_date) VALUES
+((SELECT id FROM app_user WHERE username = 'uzivatel'), 'DELIVERED', CURRENT_TIMESTAMP - INTERVAL '10 days'),
+((SELECT id FROM app_user WHERE username = 'petr'), 'IN_DELIVERY', CURRENT_TIMESTAMP - INTERVAL '2 days'),
+((SELECT id FROM app_user WHERE username = 'jana'), 'SENT', CURRENT_TIMESTAMP - INTERVAL '1 days'),
+((SELECT id FROM app_user WHERE username = 'tomas'), 'PENDING', CURRENT_TIMESTAMP - INTERVAL '5 hours'),
+((SELECT id FROM app_user WHERE username = 'uzivatel'), 'CART', CURRENT_TIMESTAMP);
+
+-- Položky rezervací
+INSERT INTO reservation_item (reservation_id, trip_id, quantity, unit_price) VALUES
+(1, 1, 2, 4500.00),
+(2, 2, 1, 7200.00),
+(3, 3, 1, 9500.00),
+(4, 4, 3, 6000.00),
+(5, 1, 1, 4500.00);
+

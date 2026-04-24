@@ -16,8 +16,8 @@ Pro spuštění všech testů stačí spustit soubor **`run-tests.ps`**:, který
 ### 4.Přihlašovací údaje pro testování
 ```
 ADMIN: 
-- Email: [administrator]
-- Heslo: [administrator]
+- Email: [admin]
+- Heslo: [admin]
 
 ZÁKAZNÍK: 
 - Email: [uzivatel]
