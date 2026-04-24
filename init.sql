@@ -318,16 +318,16 @@ INSERT INTO app_user (role_id, username, password, email)
 VALUES (
     (SELECT id FROM role WHERE name = 'ROLE_ADMIN'),
     'admin',
-    'admin',
+    '$2b$10$6rkET/RMOMaENoEFh.05P./YSC27EkGSTWIUKab./U3e8d0mVM.re',
     'admin@skytours.com'
 ) ON CONFLICT DO NOTHING;
 
 INSERT INTO app_user (role_id, username, password, email)
 VALUES (
     (SELECT id FROM role WHERE name = 'ROLE_USER'),
-    'zakaznik',
-    'zakaznik',
-    'zakaznik@skytours.com'
+    'uzivatel',
+    '$2b$10$GMzKGXPGVxqprlTlo6AKN.H6Bl7VzDMBi2w77icioIm7rN6N3LGM.',
+    'uzivatel@skytours.com'
 ) ON CONFLICT DO NOTHING;
 
 -- Lokace (letiště) - ROZŠÍŘENO
